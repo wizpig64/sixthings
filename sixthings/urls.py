@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$',                   views.ThingListView.as_view(),   name='thing-list'),
+    url(r'(?P<pk>\d+)/done/$',   views.ThingDoneView.as_view(),   name='thing-done'),
     url(r'(?P<pk>\d+)/delete/$', views.ThingDeleteView.as_view(), name='thing-delete'),
     url(r'new/$',                views.ThingCreateView.as_view(), name='thing-new'),
 ]
