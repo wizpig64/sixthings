@@ -52,7 +52,7 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'environment': 'project.jinja2.Environment',
+            'environment': 'project.jinja2.environment',
         },
     },
     {
@@ -72,6 +72,9 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'project_tags': 'project.tags',
+            },
         },
     },
 ]
@@ -114,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
