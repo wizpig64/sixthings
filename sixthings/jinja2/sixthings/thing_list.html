@@ -4,21 +4,44 @@
   <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+  <div class="container">
   <h1>Six Things</h1>
   <ul>
     {% for object in object_list %}
-      <li><span class="button-delete" id="{{ object.id }}">[X]</span> {{ object.text }}</li>
+      {% if object.done %}
+        <li>
+          <button class="btn-xs btn-success button-nothing" id="{{ object.id }}">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+          </button>
+          <s>{{ object.text }}</s>
+        </li>
+      {% else %}
+        <li>
+          <button class="btn-xs btn-info button-done" id="{{ object.id }}">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </button>
+          {{ object.text }}
+        </li>
+      {% endif %}
     {% endfor %}
-    <li><span class="button-new">[+]</span><input id="new"></li>
+    {% if object_list.count() < 6 %}
+      <li>
+        <button class="btn-xs btn-primary button-new">
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+        <input id="new">
+      </li>
+    {% endif %}
   </ul>
   <script type="text/javascript">
-    $('.button-delete').click(function(){
+    $('.button-done').click(function(){
       var id = $(this).attr('id')
       $.ajax({
         type: "POST",
-        url: id+'/delete/',
+        url: id+'/done/',
         data: {
           csrfmiddlewaretoken: '{{ csrf_token }}',
           id: id,
@@ -29,18 +52,22 @@
       })
     })
     $('.button-new').click(function(){
-      $.ajax({
-        type: "POST",
-        url: 'new/',
-        data: {
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-          user: '{{ request.user.id }}',
-          text: $('#new').val(),
-        },
-        success: function() {
-          location.reload()
-        }
-      })
+      var text = $('#new').val()
+      if (text) {
+        $.ajax({
+          type: "POST",
+          url: 'new/',
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            user: '{{ request.user.id }}',
+            text: text,
+          },
+          success: function() {
+            location.reload()
+          }
+        })
+      }
     })
   </script>
+  </div>
 </body>
