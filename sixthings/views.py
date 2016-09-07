@@ -5,6 +5,11 @@ from .models import Thing
 
 class ThingListView(generic.ListView):
     model = Thing
+
+    def get_queryset(self):
+        queryset = super(ThingListView, self).get_queryset()
+        return queryset.filter(user=self.request.user)
+
     def get_context_data(self, **kwargs):
         today = datetime.date.today()
         yesterday = today - datetime.timedelta(1)
