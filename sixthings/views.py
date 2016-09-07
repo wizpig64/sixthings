@@ -1,9 +1,33 @@
+import datetime
 from django.views import generic
 from django.http import HttpResponseRedirect
 from .models import Thing
 
 class ThingListView(generic.ListView):
     model = Thing
+    def get_context_data(self, **kwargs):
+        today = datetime.date.today()
+        yesterday = today - datetime.timedelta(1)
+        tomorrow = today + datetime.timedelta(1)
+
+        queryset = kwargs.pop('object_list', self.object_list)
+
+        context = {
+            'yesterday': {
+                'date': yesterday,
+                'things': queryset.filter(date=yesterday),
+            },
+            'today': {
+                'date': today,
+                'things': queryset.filter(date=today),
+            },
+            'tomorrow': {
+                'date': tomorrow,
+                'things': queryset.filter(date=tomorrow),
+            },
+        }
+        context.update(kwargs)
+        return super(ThingListView, self).get_context_data(**context)
 
 class ThingDeleteView(generic.DeleteView):
     model = Thing
