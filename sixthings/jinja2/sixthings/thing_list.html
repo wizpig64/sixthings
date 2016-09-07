@@ -12,74 +12,74 @@
 </head>
 <body>
   <div class="container">
-  <h1>Six Things</h1>
-  <div class="row">
-    {% for day in days %}
-      <div class="col-sm-4">
-        <h2>
-          {{ day['name'].title() }}<br>
-          <small>{{ day['date'].strftime('%B %-d, %Y') }}</small>
-        </h2>
-        <ul class="list-group">
-          {% for thing in day['things'] %}
-            <li class="list-group-item {% if thing.done %}active{% endif %}">
-              <span class="buttons pull-right">
-                {% if thing.done %}
-                  <button class="btn-xs btn-info action action-undone" title="Mark Undone" id="{{ thing.id }}">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+    <h1>Six Things</h1>
+    <div class="row">
+      {% for day in days %}
+        <div class="col-sm-4">
+          <h2>
+            {{ day['name'].title() }}<br>
+            <small>{{ day['date'].strftime('%B %-d, %Y') }}</small>
+          </h2>
+          <ul class="list-group">
+            {% for thing in day['things'] %}
+              <li class="list-group-item {% if thing.done %}active{% endif %}">
+                <span class="buttons pull-right">
+                  {% if thing.done %}
+                    <button class="btn-xs btn-info action action-undone" title="Mark Undone" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  {% else %}
+                    <button class="btn-xs btn-success action action-done" title="Mark Done" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    </button>
+                    <button class="btn-xs btn-info action action-defer" title="Defer" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+                    </button>
+                  {% endif %}
+                  <button class="btn-xs btn-primary action action-delete" title="Delete" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                   </button>
-                {% else %}
-                  <button class="btn-xs btn-success action action-done" title="Mark Done" id="{{ thing.id }}">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                  </button>
-                  <button class="btn-xs btn-info action action-defer" title="Defer" id="{{ thing.id }}">
-                    <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-                  </button>
-                {% endif %}
-                <button class="btn-xs btn-primary action action-delete" title="Delete" id="{{ thing.id }}">
-                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                </button>
-              </span>
-              <span {% if thing.done %}
-                style="text-decoration:line-through"
-              {% endif %}>
-                {{ thing.text }}
-              </span>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endfor %}
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <form id="new" action="new/" method="post">
-        <h2 class="switch-to-today">What do you need to do tomorrow?</h2>
-        <h2 class="switch-to-tomorrow hidden">What do you need to do today?</h2>
-        <div class="inputs {% if days[2]['things'].count() >= 6 %}hidden{% endif %}">
-          <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
-          <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
-          <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
-          <input name="text" class="form-control" autofocus="autofocus">
+                </span>
+                <span {% if thing.done %}
+                  style="text-decoration:line-through"
+                {% endif %}>
+                  {{ thing.text }}
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
-        <p class="denial {% if days[2]['things'].count() < 6 %}hidden{% endif %}">Six things already added.</p>
-      </form>
+      {% endfor %}
     </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <h2>Explanation</h2>
-      <p>In 1918, Ivy Ledbetter Lee developed a simple productivity system:</p>
-      <ol>
-        <li>At the end of each workday, write down the six most important things you need to accomplish tomorrow. Do not write down more than six tasks.</li>
-        <li>Prioritize those six items in order of their true importance.</li>
-        <li>When you arrive tomorrow, concentrate only on the first task. Work until the first task is finished before moving on to the second task.</li>
-        <li>Approach the rest of your list in the same fashion. At the end of the day, move any unfinished items to a new list of six tasks for the following day.</li>
-        <li>Repeat this process every working day.</li>
-      </ol>
-      <p><a href="https://github.com/wizpig64/sixthings">https://github.com/wizpig64/sixthings</a></p>
+    <div class="row">
+      <div class="col-xs-12">
+        <form id="new" action="new/" method="post">
+          <h2 class="switch-to-today">What do you need to do tomorrow?</h2>
+          <h2 class="switch-to-tomorrow hidden">What do you need to do today?</h2>
+          <div class="inputs {% if days[2]['things'].count() >= 6 %}hidden{% endif %}">
+            <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
+            <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
+            <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
+            <input name="text" class="form-control" autofocus="autofocus">
+          </div>
+          <p class="denial {% if days[2]['things'].count() < 6 %}hidden{% endif %}">Six things already added.</p>
+        </form>
+      </div>
     </div>
-  </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>Explanation</h2>
+        <p>In 1918, Ivy Ledbetter Lee developed a simple productivity system:</p>
+        <ol>
+          <li>At the end of each workday, write down the six most important things you need to accomplish tomorrow. Do not write down more than six tasks.</li>
+          <li>Prioritize those six items in order of their true importance.</li>
+          <li>When you arrive tomorrow, concentrate only on the first task. Work until the first task is finished before moving on to the second task.</li>
+          <li>Approach the rest of your list in the same fashion. At the end of the day, move any unfinished items to a new list of six tasks for the following day.</li>
+          <li>Repeat this process every working day.</li>
+        </ol>
+        <p><a href="https://github.com/wizpig64/sixthings">https://github.com/wizpig64/sixthings</a></p>
+      </div>
+    </div>
   </div>
   <script type="text/javascript">
     //action buttons
