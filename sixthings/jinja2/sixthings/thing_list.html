@@ -25,18 +25,18 @@
             <li class="list-group-item {% if thing.done %}active{% endif %}">
               <span class="buttons pull-right">
                 {% if thing.done %}
-                  <button class="btn-xs btn-info action action-undone" id="{{ thing.id }}">
+                  <button class="btn-xs btn-info action action-undone" title="Mark Undone" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                   </button>
                 {% else %}
-                  <button class="btn-xs btn-success action action-done" id="{{ thing.id }}">
+                  <button class="btn-xs btn-success action action-done" title="Mark Done" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                   </button>
-                  <button class="btn-xs btn-info action action-defer" id="{{ thing.id }}">
+                  <button class="btn-xs btn-info action action-defer" title="Defer" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
                   </button>
                 {% endif %}
-                <button class="btn-xs btn-primary action action-delete" id="{{ thing.id }}">
+                <button class="btn-xs btn-primary action action-delete" title="Delete" id="{{ thing.id }}">
                   <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </button>
               </span>
