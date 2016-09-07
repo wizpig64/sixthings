@@ -13,18 +13,21 @@ class ThingListView(generic.ListView):
         queryset = kwargs.pop('object_list', self.object_list)
 
         context = {
-            'yesterday': {
-                'date': yesterday,
-                'things': queryset.filter(date=yesterday),
-            },
-            'today': {
-                'date': today,
-                'things': queryset.filter(date=today),
-            },
-            'tomorrow': {
-                'date': tomorrow,
-                'things': queryset.filter(date=tomorrow),
-            },
+            'days': [
+                {
+                    'name': 'yesterday',
+                    'date': yesterday,
+                    'things': queryset.filter(date=yesterday),
+                }, {
+                    'name': 'today',
+                    'date': today,
+                    'things': queryset.filter(date=today),
+                }, {
+                    'name': 'tomorrow',
+                    'date': tomorrow,
+                    'things': queryset.filter(date=tomorrow),
+                },
+            ],
         }
         context.update(kwargs)
         return super(ThingListView, self).get_context_data(**context)

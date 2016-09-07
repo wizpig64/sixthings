@@ -10,105 +10,41 @@
   <div class="container">
   <h1>Six Things</h1>
   <div class="row">
-    <div class="col-sm-4">
-      <h2>
-        Yesterday<br>
-        <small>{{ yesterday['date'].strftime('%B %-d, %Y') }}</small>
-      </h2>
-      <ul class="list-group">
-        {% for thing in yesterday['things'] %}
-          {% if thing.done %}
+    {% for day in days %}
+      <div class="col-sm-4">
+        <h2>
+          {{ day['name'].title() }}<br>
+          <small>{{ day['date'].strftime('%B %-d, %Y') }}</small>
+        </h2>
+        <ul class="list-group">
+          {% for thing in day['things'] %}
+            {% if thing.done %}
+              <li class="list-group-item">
+                <button class="btn-xs btn-success button-nothing" id="{{ thing.id }}">
+                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+                <s>{{ thing.text }}</s>
+              </li>
+            {% else %}
+              <li class="list-group-item">
+                <button class="btn-xs btn-info button-done" id="{{ thing.id }}">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+                {{ thing.text }}
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if day['things'].count() < 6 %}
             <li class="list-group-item">
-              <button class="btn-xs btn-success button-nothing" id="{{ thing.id }}">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+              <button class="btn-xs btn-primary button-new">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               </button>
-              <s>{{ thing.text }}</s>
-            </li>
-          {% else %}
-            <li class="list-group-item">
-              <button class="btn-xs btn-info button-done" id="{{ thing.id }}">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-              </button>
-              {{ thing.text }}
-            </li>
-          {% endif %}
-        {% endfor %}
-        {% if yesterday['things'].count() < 6 %}
-          <li class="list-group-item">
-            <button class="btn-xs btn-primary button-new">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
-            <input id="new" class="form-control">
-          </li>
-        {% endif %}
-      </ul>
-    </div>
-    <div class="col-sm-4">
-      <h2>
-        Today<br>
-        <small>{{ today['date'].strftime('%B %-d, %Y') }}</small>
-      </h2>
-      <ul class="list-group">
-        {% for thing in today['things'] %}
-          {% if thing.done %}
-            <li class="list-group-item">
-              <button class="btn-xs btn-success button-nothing" id="{{ thing.id }}">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-              </button>
-              <s>{{ thing.text }}</s>
-            </li>
-          {% else %}
-            <li class="list-group-item">
-              <button class="btn-xs btn-info button-done" id="{{ thing.id }}">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-              </button>
-              {{ thing.text }}
+              <input id="new" class="form-control">
             </li>
           {% endif %}
-        {% endfor %}
-        {% if today['things'].count() < 6 %}
-          <li class="list-group-item">
-            <button class="btn-xs btn-primary button-new">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
-            <input id="new" class="form-control">
-          </li>
-        {% endif %}
-      </ul>
-    </div>
-    <div class="col-sm-4">
-      <h2>
-        Tomorrow<br>
-        <small>{{ tomorrow['date'].strftime('%B %-d, %Y') }}</small>
-      </h2>
-      <ul class="list-group">
-        {% for thing in tomorrow['things'] %}
-          {% if thing.done %}
-            <li class="list-group-item">
-              <button class="btn-xs btn-success button-nothing" id="{{ thing.id }}">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-              </button>
-              <s>{{ thing.text }}</s>
-            </li>
-          {% else %}
-            <li class="list-group-item">
-              <button class="btn-xs btn-info button-done" id="{{ thing.id }}">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-              </button>
-              {{ thing.text }}
-            </li>
-          {% endif %}
-        {% endfor %}
-        {% if tomorrow['things'].count() < 6 %}
-          <li class="list-group-item">
-            <button class="btn-xs btn-primary button-new">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
-            <input id="new" class="form-control">
-          </li>
-        {% endif %}
-      </ul>
-    </div>
+        </ul>
+      </div>
+    {% endfor %}
   </div>
   <script type="text/javascript">
     $('.button-done').click(function(){
