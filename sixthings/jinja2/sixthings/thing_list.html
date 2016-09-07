@@ -8,6 +8,7 @@
   <style type="text/css">
     .list-group-item .buttons {display: none;}
     .list-group-item:hover .buttons {display: block;}
+    .strike {text-decoration: line-through;}
   </style>
 </head>
 <body>
@@ -40,9 +41,7 @@
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                   </button>
                 </span>
-                <span {% if thing.done %}
-                  style="text-decoration:line-through"
-                {% endif %}>
+                <span class="{% if thing.done %}strike{% endif %}">
                   {{ thing.text }}
                 </span>
               </li>
