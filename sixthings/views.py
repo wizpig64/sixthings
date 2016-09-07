@@ -36,9 +36,7 @@ class ThingDeleteView(generic.DeleteView):
     model = Thing
     success_url = '/'
 
-class ThingDoneView(generic.DeleteView):
-    model = Thing
-    success_url = '/'
+class ThingDoneView(ThingDeleteView):
     def delete(self, request, *args, **kwargs):
         """
         modified delete() to just mark as done
@@ -49,10 +47,33 @@ class ThingDoneView(generic.DeleteView):
         self.object.save()
         return HttpResponseRedirect(success_url)
 
+class ThingUndoneView(ThingDeleteView):
+    def delete(self, request, *args, **kwargs):
+        """
+        modified delete() to just mark as undone
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.done = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
+class ThingDeferView(ThingDeleteView):
+    def delete(self, request, *args, **kwargs):
+        """
+        modified delete() to move to tomorrow
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.date = self.object.date + datetime.timedelta(1)
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
 class ThingCreateView(generic.CreateView):
     model = Thing
     fields = [
         'user',
+        'date',
         'text',
     ]
     success_url = '/'

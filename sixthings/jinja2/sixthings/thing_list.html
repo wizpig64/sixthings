@@ -5,6 +5,10 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+    .list-group-item .buttons {display: none;}
+    .list-group-item:hover .buttons {display: block;}
+  </style>
 </head>
 <body>
   <div class="container">
@@ -18,59 +22,63 @@
         </h2>
         <ul class="list-group">
           {% for thing in day['things'] %}
-            {% if thing.done %}
-              <li class="list-group-item">
-                <button class="btn-xs btn-success button-nothing" id="{{ thing.id }}">
-                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            <li class="list-group-item {% if thing.done %}active{% endif %}">
+              <span class="buttons pull-right">
+                {% if thing.done %}
+                  <button class="btn-xs btn-info action action-undone" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  </button>
+                {% else %}
+                  <button class="btn-xs btn-success action action-done" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  </button>
+                  <button class="btn-xs btn-info action action-defer" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+                  </button>
+                {% endif %}
+                <button class="btn-xs btn-primary action action-delete" id="{{ thing.id }}">
+                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </button>
-                <s>{{ thing.text }}</s>
-              </li>
-            {% else %}
-              <li class="list-group-item">
-                <button class="btn-xs btn-info button-done" id="{{ thing.id }}">
-                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
+              </span>
+              <span {% if thing.done %}
+                style="text-decoration:line-through"
+              {% endif %}>
                 {{ thing.text }}
-              </li>
-            {% endif %}
-          {% endfor %}
-          {% if day['things'].count() < 6 %}
-            <li class="list-group-item">
-              <button class="btn-xs btn-primary button-new">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-              </button>
-              <input id="new" class="form-control">
+              </span>
             </li>
-          {% endif %}
+          {% endfor %}
         </ul>
       </div>
     {% endfor %}
   </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>What do you need to do tomorrow?</h2>
+      {% if days[2]['things'].count() < 6 %}
+        <form id="new" action="new/" method="post">
+          <input name="csrfmiddlewaretoken" type="hidden" readonly value="{{ csrf_token }}">
+          <input name="user" type="hidden" readonly value="{{ request.user.id }}">
+          <input name="date" type="hidden" readonly value="{{ days[2]['date'].strftime('%Y-%m-%d') }}">
+          <input name="text" class="form-control">
+        </form>
+      {% else %}
+        <p>Six things already added for tomorrow.</p>
+      {% endif %}
+    </div>
+  </div>
   <script type="text/javascript">
-    $('.button-done').click(function(){
-      var id = $(this).attr('id')
-      $.ajax({
-        type: "POST",
-        url: id+'/done/',
-        data: {
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-          id: id,
-        },
-        success: function() {
-          location.reload()
-        }
-      })
-    })
-    $('.button-new').click(function(){
-      var text = $('#new').val()
-      if (text) {
+    $("button.action").click(function(){
+      var id = $(this).attr("id")
+      var re = /(?:^|\s)action-(.*?)(?:\s|$)/g;
+      var match = re.exec($(this).attr("class"));
+      var action = match[1]
+      if (action != undefined) {
         $.ajax({
           type: "POST",
-          url: 'new/',
+          url: id + "/" + action + "/",
           data: {
             csrfmiddlewaretoken: '{{ csrf_token }}',
-            user: '{{ request.user.id }}',
-            text: text,
+            id: id,
           },
           success: function() {
             location.reload()
@@ -79,5 +87,4 @@
       }
     })
   </script>
-  </div>
 </body>
