@@ -59,7 +59,7 @@
           <input name="csrfmiddlewaretoken" type="hidden" readonly value="{{ csrf_token }}">
           <input name="user" type="hidden" readonly value="{{ request.user.id }}">
           <input name="date" type="hidden" readonly value="{{ days[2]['date'].strftime('%Y-%m-%d') }}">
-          <input name="text" class="form-control">
+          <input name="text" class="form-control" autofocus="autofocus">
         </form>
       {% else %}
         <p>Six things already added for tomorrow.</p>
