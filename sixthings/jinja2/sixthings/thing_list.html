@@ -53,17 +53,17 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <h2>What do you need to do tomorrow?</h2>
-      {% if days[2]['things'].count() < 6 %}
-        <form id="new" action="new/" method="post">
-          <input name="csrfmiddlewaretoken" type="hidden" readonly value="{{ csrf_token }}">
-          <input name="user" type="hidden" readonly value="{{ request.user.id }}">
-          <input name="date" type="hidden" readonly value="{{ days[2]['date'].strftime('%Y-%m-%d') }}">
+      <form id="new" action="new/" method="post">
+        <h2 class="switch-to-today">What do you need to do tomorrow?</h2>
+        <h2 class="switch-to-tomorrow hidden">What do you need to do today?</h2>
+        <div class="inputs {% if days[2]['things'].count() >= 6 %}hidden{% endif %}">
+          <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
+          <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
+          <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
           <input name="text" class="form-control" autofocus="autofocus">
-        </form>
-      {% else %}
-        <p>Six things already added for tomorrow.</p>
-      {% endif %}
+        </div>
+        <p class="denial {% if days[2]['things'].count() < 6 %}hidden{% endif %}">Six things already added.</p>
+      </form>
     </div>
   </div>
   <div class="row">
@@ -80,7 +80,9 @@
       <p><a href="https://github.com/wizpig64/sixthings">https://github.com/wizpig64/sixthings</a></p>
     </div>
   </div>
+  </div>
   <script type="text/javascript">
+    //action buttons
     $("button.action").click(function(){
       var id = $(this).attr("id")
       var re = /(?:^|\s)action-(.*?)(?:\s|$)/g;
@@ -98,6 +100,25 @@
             location.reload()
           }
         })
+      }
+    })
+    //submission form
+    function allowInputs(){
+      $("#new .inputs").removeClass("hidden")
+      $("#new .denial").addClass("hidden")
+    }
+    function denyInputs(){
+      $("#new .inputs").addClass("hidden")
+      $("#new .denial").removeClass("hidden")
+    }
+    $("#new h2").click(function(){
+      $("#new h2").toggleClass("hidden")
+      if ($(this).hasClass("switch-to-tomorrow")){
+        $("#new input.day").attr("value", "{{ days[2]['date'].strftime('%Y-%m-%d') }}")
+        if ({{ days[2]['things'].count() }} >= 6){denyInputs()} else {allowInputs()}
+      } else if ($(this).hasClass("switch-to-today")){
+        $("#new input.day").attr("value", "{{ days[1]['date'].strftime('%Y-%m-%d') }}")
+        if ({{ days[1]['things'].count() }} >= 6){denyInputs()} else {allowInputs()}
       }
     })
   </script>
