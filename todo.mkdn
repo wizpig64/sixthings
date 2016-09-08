@@ -1,6 +1,7 @@
 To Do
 =====
 
+- Tapping hamburger clicks the delete button on mobile!
 - List prioritization
 - Auth views
 - REST Framework
