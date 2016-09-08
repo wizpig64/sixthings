@@ -26,7 +26,6 @@
           <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
           <div class="inputs {% if not days[2]['can_add'] %}hidden{% endif %}">
             <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
-            <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
             <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
             <input name="text" class="form-control" autofocus="autofocus">
           </div>
