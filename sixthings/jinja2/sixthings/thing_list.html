@@ -11,9 +11,8 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet">
   <style type="text/css">
-    .list-group-item .buttons {display: none;}
-    .list-group-item:hover .buttons {display: block;}
-    .list-group-item:hover .buttons-clue {display: none;}
+    .list-group-item .hover {display: none;}
+    .list-group-item:hover .hover {display: inline-block;}
     .strike {text-decoration: line-through;}
   </style>
 </head>
@@ -45,26 +44,27 @@
           <ul class="list-group">
             {% for thing in day['things'] %}
               <li class="list-group-item {% if thing.done %}active{% endif %}">
-                <span class="buttons-clue pull-right glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
-                <span class="buttons pull-right">
-                  {% if thing.done %}
-                    <button class="btn-xs btn-info action action-undone" title="Mark Undone" id="{{ thing.id }}">
-                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </button>
-                  {% else %}
-                    <button class="btn-xs btn-success action action-done" title="Mark Done" id="{{ thing.id }}">
-                      <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    </button>
-                    {% if day['can_defer'] %}
-                      <button class="btn-xs btn-info action action-defer" title="Defer" id="{{ thing.id }}">
-                        <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-                      </button>
-                    {% endif %}
-                  {% endif %}
-                  <button class="btn-xs btn-primary action action-delete" title="Delete" id="{{ thing.id }}">
+                <span class="pull-right">
+                  <button class="btn-xs btn-default hover action action-delete" title="Delete" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                   </button>
+                  {% if not thing.done and day['can_defer'] %}
+                    <button class="btn-xs btn-info hover action action-defer" title="Defer" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+                    </button>
+                  {% endif %}
+                  {% if not thing.done %}
+                    <button class="btn-xs btn-primary action action-done" title="Mark Done" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  {% endif %}
+                  {% if thing.done %}
+                    <button class="btn-xs btn-success action action-undone" title="Mark Undone" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    </button>
+                  {% endif %}
                 </span>
+                <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
                 <span class="{% if thing.done %}strike{% endif %}">
                   {{ thing.text }}
                 </span>
