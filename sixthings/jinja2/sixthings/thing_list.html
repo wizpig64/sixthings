@@ -16,7 +16,7 @@
     <h1>Six Things</h1>
     <div class="row">
       {% for day in days %}
-        <div class="col-sm-4">
+        <div class="col-sm-4 {% if day['name'] == 'yesterday' %}hidden-xs{% endif %}">
           <h2>
             {{ day['name'].title() }}<br>
             <small>{{ day['date'].strftime('%B %-d, %Y') }}</small>
