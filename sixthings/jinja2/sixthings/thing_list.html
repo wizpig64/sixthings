@@ -1,98 +1,91 @@
-<!doctype html>
-<head>
-  <title>Six Things</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="application-name" content="Six Things">
-  <meta name="description" content="">
-  <meta name="author" content="wizpig64">
-  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet">
+{% extends "base.html" %}
+
+{% block head %}
   <style type="text/css">
     .list-group-item .hover {display: none;}
     .list-group-item:hover .hover {display: inline-block;}
     .strike {text-decoration: line-through;}
   </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Six Things</h1>
-    <div class="row">
-      <div class="col-xs-12">
-        <form id="new" action="new/" method="post">
-          <h2 class="switch-to-today">What do you need to do tomorrow? <small>Click for today</small></h2>
-          <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
-          <div class="inputs {% if not days.2.can_add %}hidden{% endif %}">
-            <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
-            <input name="date" type="hidden" readonly="readonly" value="{{ days.2.date.strftime('%Y-%m-%d') }}" class="day">
-            <input name="text" class="form-control" required="required" autofocus="autofocus">
-          </div>
-          <p class="denial {% if days.2.can_add %}hidden{% endif %}">Six things already added.</p>
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      {% for day in days %}
-        <div class="col-sm-4 {% if day.name == 'yesterday' %}hidden-xs{% endif %}">
-          <h2>
-            {{ day.name.title() }}<br>
-            <small>{{ day.date.strftime('%B %-d, %Y') }}</small>
-          </h2>
-          <ul class="list-group">
-            {% for thing in day.things %}
-              <li class="list-group-item {% if thing.done %}active{% endif %} {% if thing.deferred %}disabled{% endif %}">
-                <span class="pull-right">
-                  <button class="btn-xs btn-default hover action action-delete" title="Delete" id="{{ thing.id }}">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                  </button>
-                  {% if not thing.done and not thing.deferred and day.can_defer %}
-                    <button class="btn-xs btn-info hover action action-defer" title="Defer" id="{{ thing.id }}">
-                      <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-                    </button>
-                  {% endif %}
-                  {% if not thing.done and not thing.deferred %}
-                    <button class="btn-xs btn-primary action action-done" title="Mark Done" id="{{ thing.id }}">
-                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                    </button>
-                  {% endif %}
-                  {% if thing.deferred %}{# no action #}
-                    <button class="btn-xs btn-info" title="Deferred" id="{{ thing.id }}">
-                      <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
-                    </button>
-                  {% endif %}
-                  {% if thing.done %}
-                    <button class="btn-xs btn-success action action-undone" title="Mark Undone" id="{{ thing.id }}">
-                      <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    </button>
-                  {% endif %}
-                </span>
-                <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
-                <span class="{% if thing.done %}strike{% endif %}">
-                  {{ thing.text }}
-                </span>
-              </li>
-            {% endfor %}
-          </ul>
+{% endblock %}
+
+{% block content %}
+  <h1>Six Things</h1>
+  <div class="row">
+    <div class="col-xs-12">
+      <form id="new" action="new/" method="post">
+        <h2 class="switch-to-today">What do you need to do tomorrow? <small>Click for today</small></h2>
+        <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
+        <div class="inputs {% if not days.2.can_add %}hidden{% endif %}">
+          <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
+          <input name="date" type="hidden" readonly="readonly" value="{{ days.2.date.strftime('%Y-%m-%d') }}" class="day">
+          <input name="text" class="form-control" required="required" autofocus="autofocus">
         </div>
-      {% endfor %}
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Explanation</h2>
-        <p><a href="http://www.fastcompany.com/3062946/">In 1918, Ivy Ledbetter Lee developed a simple productivity system</a>:</p>
-        <ol>
-          <li>At the end of each workday, write down the six most important things you need to accomplish tomorrow. Do not write down more than six tasks.</li>
-          <li>Prioritize those six items in order of their true importance.</li>
-          <li>When you arrive tomorrow, concentrate only on the first task. Work until the first task is finished before moving on to the second task.</li>
-          <li>Approach the rest of your list in the same fashion. At the end of the day, move any unfinished items to a new list of six tasks for the following day.</li>
-          <li>Repeat this process every working day.</li>
-        </ol>
-        <p><a href="https://github.com/wizpig64/sixthings">Fork this project on github.</a></p>
-      </div>
+        <p class="denial {% if days.2.can_add %}hidden{% endif %}">Six things already added.</p>
+      </form>
     </div>
   </div>
+  <div class="row">
+    {% for day in days %}
+      <div class="col-sm-4 col-xs-6 {% if day.name == 'yesterday' %}hidden-xs{% endif %}">
+        <h2>
+          {{ day.name.title() }}<br>
+          <small>{{ day.date.strftime('%B %-d, %Y') }}</small>
+        </h2>
+        <ul class="list-group">
+          {% for thing in day.things %}
+            <li class="list-group-item {% if thing.done %}active{% endif %} {% if thing.deferred %}disabled{% endif %}">
+              <span class="pull-right">
+                <button class="btn-xs btn-default hover action action-delete" title="Delete" id="{{ thing.id }}">
+                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+                {% if not thing.done and not thing.deferred and day.can_defer %}
+                  <button class="btn-xs btn-info hover action action-defer" title="Defer" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+                  </button>
+                {% endif %}
+                {% if not thing.done and not thing.deferred %}
+                  <button class="btn-xs btn-primary action action-done" title="Mark Done" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  </button>
+                {% endif %}
+                {% if thing.deferred %}{# no action #}
+                  <button class="btn-xs btn-info" title="Deferred" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+                  </button>
+                {% endif %}
+                {% if thing.done %}
+                  <button class="btn-xs btn-success action action-undone" title="Mark Undone" id="{{ thing.id }}">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                  </button>
+                {% endif %}
+              </span>
+              <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
+              <span class="{% if thing.done %}strike{% endif %}">
+                {{ thing.text }}
+              </span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>Explanation</h2>
+      <p><a href="http://www.fastcompany.com/3062946/">In 1918, Ivy Ledbetter Lee developed a simple productivity system</a>:</p>
+      <ol>
+        <li>At the end of each workday, write down the six most important things you need to accomplish tomorrow. Do not write down more than six tasks.</li>
+        <li>Prioritize those six items in order of their true importance.</li>
+        <li>When you arrive tomorrow, concentrate only on the first task. Work until the first task is finished before moving on to the second task.</li>
+        <li>Approach the rest of your list in the same fashion. At the end of the day, move any unfinished items to a new list of six tasks for the following day.</li>
+        <li>Repeat this process every working day.</li>
+      </ol>
+      <p><a href="https://github.com/wizpig64/sixthings">Fork this project on github.</a></p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block after_body %}
   <script type="text/javascript">
     //action buttons
     $("button.action").click(function(){
@@ -135,4 +128,4 @@
       $("#new input[name='text']").focus()
     })
   </script>
-</body>
+{% endblock %}
