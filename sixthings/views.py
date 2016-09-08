@@ -17,25 +17,27 @@ class ThingListView(generic.ListView):
 
         queryset = kwargs.pop('object_list', self.object_list)
 
-        context = {
-            'days': [
-                {
-                    'name': 'yesterday',
-                    'date': yesterday,
-                    'things': queryset.filter(date=yesterday),
-                }, {
-                    'name': 'today',
-                    'date': today,
-                    'things': queryset.filter(date=today),
-                }, {
-                    'name': 'tomorrow',
-                    'date': tomorrow,
-                    'things': queryset.filter(date=tomorrow),
-                },
-            ],
-        }
-        context.update(kwargs)
-        return super(ThingListView, self).get_context_data(**context)
+        days = [{
+            'name':   'yesterday',
+            'date':   yesterday,
+            'things': queryset.filter(date=yesterday),
+        }, {
+            'name':   'today',
+            'date':   today,
+            'things': queryset.filter(date=today),
+        }, {
+            'name':   'tomorrow',
+            'date':   tomorrow,
+            'things': queryset.filter(date=tomorrow),
+        },]
+
+        for day in days:
+            day['can_add'] = True if day['things'].count() < 6 else False
+
+        for i, day in enumerate(days):
+            day['can_defer'] = days[i + 1]['can_add'] if i + 1 < len(days) else False
+
+        return super(ThingListView, self).get_context_data(days=days, **kwargs)
 
 class ThingDeleteView(generic.DeleteView):
     model = Thing
