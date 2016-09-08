@@ -15,7 +15,7 @@ class ThingCreateForm(ModelForm):
         self._user = user
 
     def save(self, commit=True, **kwargs):
-        m = super(ThingCreateView, self).save(commit=False, **kwargs)
+        m = super(ThingCreateForm, self).save(commit=False, **kwargs)
         self.instance.user = self._user
         if commit:
             m.save()
