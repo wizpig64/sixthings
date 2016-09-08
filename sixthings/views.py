@@ -66,12 +66,16 @@ class ThingUndoneView(ThingDeleteView):
 class ThingDeferView(ThingDeleteView):
     def delete(self, request, *args, **kwargs):
         """
-        modified delete() to move to tomorrow
+        modified delete() to just copy to tomorrow
         """
         self.object = self.get_object()
         success_url = self.get_success_url()
-        self.object.date = self.object.date + datetime.timedelta(1)
-        self.object.save()
+        Thing.objects.create(
+            user=self.object.user,
+            date=self.object.date + datetime.timedelta(1),
+            text=self.object.text,
+            done=self.object.done,
+        )
         return HttpResponseRedirect(success_url)
 
 class ThingCreateView(generic.CreateView):
