@@ -13,6 +13,7 @@
   <style type="text/css">
     .list-group-item .buttons {display: none;}
     .list-group-item:hover .buttons {display: block;}
+    .list-group-item:hover .buttons-clue {display: none;}
     .strike {text-decoration: line-through;}
   </style>
 </head>
@@ -29,6 +30,7 @@
           <ul class="list-group">
             {% for thing in day['things'] %}
               <li class="list-group-item {% if thing.done %}active{% endif %}">
+                <span class="buttons-clue pull-right glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
                 <span class="buttons pull-right">
                   {% if thing.done %}
                     <button class="btn-xs btn-info action action-undone" title="Mark Undone" id="{{ thing.id }}">
