@@ -47,14 +47,19 @@
                   <button class="btn-xs btn-default hover action action-delete" title="Delete" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                   </button>
-                  {% if not thing.done and day['can_defer'] %}
+                  {% if not thing.done and not thing.deferred and day['can_defer'] %}
                     <button class="btn-xs btn-info hover action action-defer" title="Defer" id="{{ thing.id }}">
                       <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
                     </button>
                   {% endif %}
-                  {% if not thing.done %}
+                  {% if not thing.done and not thing.deferred %}
                     <button class="btn-xs btn-primary action action-done" title="Mark Done" id="{{ thing.id }}">
                       <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  {% endif %}
+                  {% if thing.deferred %}{# no action #}
+                    <button class="btn-xs btn-info" title="Deferred" id="{{ thing.id }}">
+                      <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
                     </button>
                   {% endif %}
                   {% if thing.done %}
