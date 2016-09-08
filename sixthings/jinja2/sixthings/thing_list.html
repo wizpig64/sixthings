@@ -27,7 +27,7 @@
           <div class="inputs {% if not days[2]['can_add'] %}hidden{% endif %}">
             <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
             <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
-            <input name="text" class="form-control" autofocus="autofocus">
+            <input name="text" class="form-control" required="required" autofocus="autofocus">
           </div>
           <p class="denial {% if days[2]['can_add'] %}hidden{% endif %}">Six things already added.</p>
         </form>
