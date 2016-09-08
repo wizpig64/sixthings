@@ -1,7 +1,7 @@
 The Ivy Lee Method
 ==================
 
-In 1918, Ivy Ledbetter Lee developed a simple productivity system:
+[[In 1918, Ivy Ledbetter Lee developed a simple productivity system](http://www.fastcompany.com/3062946/)]:
 
 1. At the end of each workday, write down the six most important things you need to accomplish tomorrow. Do not write down more than six tasks.
 2. Prioritize those six items in order of their true importance.
@@ -9,6 +9,8 @@ In 1918, Ivy Ledbetter Lee developed a simple productivity system:
 4. Approach the rest of your list in the same fashion. At the end of the day, move any unfinished items to a new list of six tasks for the following day.
 5. Repeat this process every working day.
 
-[[Source](http://www.fastcompany.com/3062946/your-most-productive-self/this-100-year-old-to-do-list-hack-still-works-like-a-charm)]
 
-This project was created so I could explore the new django channels package, Jinja2 templates, and to build a tool that might help me with my productivity.
+Six Things
+==========
+
+This project was created so I could explore using Django 1.10, Django Channels, Django REST framework, Jinja2 templates, and to build a tool that might help me with my productivity.
