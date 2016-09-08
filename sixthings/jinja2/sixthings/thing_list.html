@@ -55,8 +55,8 @@
     <div class="row">
       <div class="col-xs-12">
         <form id="new" action="new/" method="post">
-          <h2 class="switch-to-today">What do you need to do tomorrow?</h2>
-          <h2 class="switch-to-tomorrow hidden">What do you need to do today?</h2>
+          <h2 class="switch-to-today">What do you need to do tomorrow? <small>Click for today</small></h2>
+          <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
           <div class="inputs {% if not days[2]['can_add'] %}hidden{% endif %}">
             <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
             <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
