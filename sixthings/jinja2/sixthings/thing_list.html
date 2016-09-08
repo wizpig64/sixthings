@@ -21,6 +21,21 @@
   <div class="container">
     <h1>Six Things</h1>
     <div class="row">
+      <div class="col-xs-12">
+        <form id="new" action="new/" method="post">
+          <h2 class="switch-to-today">What do you need to do tomorrow? <small>Click for today</small></h2>
+          <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
+          <div class="inputs {% if not days[2]['can_add'] %}hidden{% endif %}">
+            <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
+            <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
+            <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
+            <input name="text" class="form-control" autofocus="autofocus">
+          </div>
+          <p class="denial {% if days[2]['can_add'] %}hidden{% endif %}">Six things already added.</p>
+        </form>
+      </div>
+    </div>
+    <div class="row">
       {% for day in days %}
         <div class="col-sm-4 {% if day['name'] == 'yesterday' %}hidden-xs{% endif %}">
           <h2>
@@ -58,21 +73,6 @@
           </ul>
         </div>
       {% endfor %}
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <form id="new" action="new/" method="post">
-          <h2 class="switch-to-today">What do you need to do tomorrow? <small>Click for today</small></h2>
-          <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
-          <div class="inputs {% if not days[2]['can_add'] %}hidden{% endif %}">
-            <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
-            <input name="user" type="hidden" readonly="readonly" value="{{ request.user.id }}">
-            <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
-            <input name="text" class="form-control" autofocus="autofocus">
-          </div>
-          <p class="denial {% if days[2]['can_add'] %}hidden{% endif %}">Six things already added.</p>
-        </form>
-      </div>
     </div>
     <div class="row">
       <div class="col-xs-12">
