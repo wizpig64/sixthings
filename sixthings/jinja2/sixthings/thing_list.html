@@ -42,7 +42,7 @@
           </h2>
           <ul class="list-group">
             {% for thing in day['things'] %}
-              <li class="list-group-item {% if thing.done %}active{% endif %}">
+              <li class="list-group-item {% if thing.done %}active{% endif %} {% if thing.deferred %}disabled{% endif %}">
                 <span class="pull-right">
                   <button class="btn-xs btn-default hover action action-delete" title="Delete" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>

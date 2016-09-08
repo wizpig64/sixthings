@@ -84,8 +84,9 @@ class ThingDeferView(ThingDeleteView):
             user=self.object.user,
             date=self.object.date + datetime.timedelta(1),
             text=self.object.text,
-            done=self.object.done,
         )
+        self.object.done = None
+        self.object.save()
         return HttpResponseRedirect(success_url)
 
 class ThingCreateView(generic.CreateView):

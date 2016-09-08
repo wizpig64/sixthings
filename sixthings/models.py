@@ -4,8 +4,18 @@ import datetime
 from django.conf import settings
 from django.db import models
 
+DONE_CHOICES = (
+    (False, 'No'),
+    (True, 'Yes'),
+    (None, 'Deferred'),
+)
+
 class Thing(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     date = models.DateField(default=datetime.date.today)
     text = models.CharField(max_length=1024)
-    done = models.BooleanField(default=False)
+    done = models.NullBooleanField(default=False, choices=DONE_CHOICES)
+
+    @property
+    def deferred(self):
+        return self.done is None
