@@ -121,6 +121,7 @@
         $("#new input.day").attr("value", "{{ days[1]['date'].strftime('%Y-%m-%d') }}")
         if ({{ days[1]['can_add']|lower }}){allowInputs()} else {denyInputs()}
       }
+      $("#new input[name='text']").focus()
     })
   </script>
 </body>
