@@ -24,30 +24,30 @@
         <form id="new" action="new/" method="post">
           <h2 class="switch-to-today">What do you need to do tomorrow? <small>Click for today</small></h2>
           <h2 class="switch-to-tomorrow hidden">What do you need to do today? <small>Click for tomorrow</small></h2>
-          <div class="inputs {% if not days[2]['can_add'] %}hidden{% endif %}">
+          <div class="inputs {% if not days.2.can_add %}hidden{% endif %}">
             <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
-            <input name="date" type="hidden" readonly="readonly" value="{{ days[2]['date'].strftime('%Y-%m-%d') }}" class="day">
+            <input name="date" type="hidden" readonly="readonly" value="{{ days.2.date.strftime('%Y-%m-%d') }}" class="day">
             <input name="text" class="form-control" required="required" autofocus="autofocus">
           </div>
-          <p class="denial {% if days[2]['can_add'] %}hidden{% endif %}">Six things already added.</p>
+          <p class="denial {% if days.2.can_add %}hidden{% endif %}">Six things already added.</p>
         </form>
       </div>
     </div>
     <div class="row">
       {% for day in days %}
-        <div class="col-sm-4 {% if day['name'] == 'yesterday' %}hidden-xs{% endif %}">
+        <div class="col-sm-4 {% if day.name == 'yesterday' %}hidden-xs{% endif %}">
           <h2>
-            {{ day['name'].title() }}<br>
-            <small>{{ day['date'].strftime('%B %-d, %Y') }}</small>
+            {{ day.name.title() }}<br>
+            <small>{{ day.date.strftime('%B %-d, %Y') }}</small>
           </h2>
           <ul class="list-group">
-            {% for thing in day['things'] %}
+            {% for thing in day.things %}
               <li class="list-group-item {% if thing.done %}active{% endif %} {% if thing.deferred %}disabled{% endif %}">
                 <span class="pull-right">
                   <button class="btn-xs btn-default hover action action-delete" title="Delete" id="{{ thing.id }}">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                   </button>
-                  {% if not thing.done and not thing.deferred and day['can_defer'] %}
+                  {% if not thing.done and not thing.deferred and day.can_defer %}
                     <button class="btn-xs btn-info hover action action-defer" title="Defer" id="{{ thing.id }}">
                       <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
                     </button>
@@ -126,11 +126,11 @@
     $("#new h2").click(function(){
       $("#new h2").toggleClass("hidden")
       if ($(this).hasClass("switch-to-tomorrow")){
-        $("#new input.day").attr("value", "{{ days[2]['date'].strftime('%Y-%m-%d') }}")
-        if ({{ days[2]['can_add']|lower }}){allowInputs()} else {denyInputs()}
+        $("#new input.day").attr("value", "{{ days.2.date.strftime('%Y-%m-%d') }}")
+        if ({{ days.2.can_add|lower }}){allowInputs()} else {denyInputs()}
       } else if ($(this).hasClass("switch-to-today")){
-        $("#new input.day").attr("value", "{{ days[1]['date'].strftime('%Y-%m-%d') }}")
-        if ({{ days[1]['can_add']|lower }}){allowInputs()} else {denyInputs()}
+        $("#new input.day").attr("value", "{{ days.1.date.strftime('%Y-%m-%d') }}")
+        if ({{ days.1.can_add|lower }}){allowInputs()} else {denyInputs()}
       }
       $("#new input[name='text']").focus()
     })
