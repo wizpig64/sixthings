@@ -1,4 +1,5 @@
 <!doctype html>
+<html lang="en">
 <head>
   <title>{% block title %}Six Things{% endblock %}</title>
   <meta charset="utf-8">
@@ -13,8 +14,7 @@
   <style type="text/css">
     .navbar-static-top, [class^="col-"] > :last-child {margin-bottom: 0;}
   </style>
-  {% block head %}
-  {% endblock %}
+  {% block head %}{% endblock %}
 </head>
 <body>
   <nav class="navbar navbar-inverse navbar-static-top">
@@ -43,9 +43,10 @@
     </div>
   </nav>
   <div class="container">
-    {% block content %}
-    {% endblock %}
+    {% block pre_content %}{% endblock %}
+    {% block content %}{% endblock %}
+    {% block post_content %}{% endblock %}
   </div>
-  {% block after_body %}
-  {% endblock %}
+  {% block after_body %}{% endblock %}
 </body>
+</html>
