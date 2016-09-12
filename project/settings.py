@@ -19,15 +19,30 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Email
+# specify these in your settings_local.py module
+
+# DEFAULT_FROM_EMAIL =
+# SERVER_EMAIL =
+# EMAIL_HOST =
+# EMAIL_HOST_USER =
+# EMAIL_HOST_PASSWORD =
+# EMAIL_PORT =
+# EMAIL_SUBJECT_PREFIX =
+# EMAIL_USE_TLS =
+
+
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'bootstrap3',
     'channels',
     'sixthings',
@@ -113,6 +128,18 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Authentican urls
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'auth_login'
+LOGOUT_URL = 'auth_logout'
+
+# Registration
+
+ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
+REGISTRATION_AUTO_LOGIN = True # Automatically log the user in.
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -140,4 +167,3 @@ try:
     from settings_local import *
 except ImportError:
     pass
-

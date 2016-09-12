@@ -33,10 +33,21 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           {% if request.user.is_authenticated %}
-          <li><a>{{ request.user.username.title() }}</a></li>
-          <li><a>Log Out</a></li>
+            <li><a>
+              {% if request.user.get_full_name() %}
+                {{ request.user.get_full_name() }}
+              {% else %}
+                {{ request.user.username.title() }}
+              {% endif %}
+            </a></li>
+            {% if request.user.is_staff %}
+              <li>
+                <a href="/admin/">Admin</a>
+              </li>
+            {% endif %}
+            <li><a href="{{ url('auth_logout') }}">Log Out</a></li>
           {% else %}
-          <li><a>Log In</a></li>
+          <li><a href="{{ url('auth_login') }}">Log In</a></li>
           {% endif %}
         </ul>
       </div><!--/.nav-collapse -->

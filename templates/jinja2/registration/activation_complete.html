@@ -1,0 +1,13 @@
+{% extends "base_narrow.html" %}
+
+{% block title %}Account Activated{% endblock %}
+
+{% block content %}
+  <h1>Account Activated</h1>
+  <p>
+    Your account is now activated.
+    {% if not request.user.is_authenticated() %}
+      You can log in.
+    {% endif %}
+  </p>
+{% endblock %}

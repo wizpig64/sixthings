@@ -1,0 +1,12 @@
+{% extends "base_narrow.html" %}
+
+{% block title %}Register for an account{% endblock %}
+
+{% block content %}
+  <h1>Register for an account</h1>
+  <form method="post" action="">
+    <input name="csrfmiddlewaretoken" type="hidden" readonly="readonly" value="{{ csrf_token }}">
+    {{ bootstrap_form(form, show_label=False) }}
+    <input class="btn btn-primary" type="submit" value="Submit" />
+  </form>
+{% endblock %}
