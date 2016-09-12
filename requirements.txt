@@ -9,6 +9,7 @@ autobahn==0.16.0          # via daphne
 channels==0.17.2
 click==6.6                # via pip-tools
 daphne==0.15.0            # via channels
+django-bootstrap3==7.0.1
 django-filter==0.14.0
 Django==1.10.1            # via channels
 djangorestframework==3.4.6
