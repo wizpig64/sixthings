@@ -80,13 +80,7 @@ class ThingDeferView(ThingDeleteView):
         if self.object.user != self.request.user:
             raise PermissionDenied
         success_url = self.get_success_url()
-        Thing.objects.create(
-            user=self.object.user,
-            date=self.object.date + datetime.timedelta(1),
-            text=self.object.text,
-        )
-        self.object.done = None
-        self.object.save()
+        self.object.defer()
         return HttpResponseRedirect(success_url)
 
 class ThingCreateView(generic.CreateView):

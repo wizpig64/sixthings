@@ -19,3 +19,12 @@ class Thing(models.Model):
     @property
     def deferred(self):
         return self.done is None
+
+    def defer(self):
+        Thing.objects.create(
+            user=self.user,
+            date=self.date + datetime.timedelta(1),
+            text=self.text,
+        )
+        self.done = None
+        self.save()
