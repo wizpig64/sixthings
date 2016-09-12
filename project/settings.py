@@ -1,5 +1,5 @@
 """
-Django settings for ivylee project.
+Django settings for sixthings project.
 """
 
 import os
