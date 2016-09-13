@@ -1,3 +1,9 @@
 *.pyc
+bin/
+include/
+lib/
+local/
+pip-selfcheck.json
+
 project/settings_local.py
 db.sqlite3
