@@ -15,7 +15,8 @@ django-registration-redux==1.4
 Django==1.10.1            # via channels
 djangorestframework==3.4.6
 first==2.0.1              # via pip-tools
-Jinja2==2.8
+gunicorn==19.6.0
+jinja2==2.8
 markdown==2.6.6
 MarkupSafe==0.23          # via jinja2
 pip-tools==1.7.0
