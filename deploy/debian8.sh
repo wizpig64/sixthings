@@ -158,7 +158,6 @@ WorkingDirectory=$PROJECT_DIR
 ExecStart=$PROJECT_DIR/bin/gunicorn \\
   --pid /run/$PROJECT_NAME/pid \\
   --workers 4 \\
-  --reload False \\
   project.wsgi
 ExecReload=/bin/kill -s HUP \$MAINPID
 ExecStop=/bin/kill -s TERM \$MAINPID
@@ -245,22 +244,16 @@ ln -s /etc/nginx/sites-available/$PROJECT_NAME /etc/nginx/sites-enabled/$PROJECT
 
 
 #Enable everything
-systemctl daemon-reload
-systemctl enable \
-    nginx.service \
-    $PROJECT_NAME.socket \
-    $PROJECT_NAME.service
-systemctl restart \
-    systemd-tmpfiles-setup.service \
-    nginx.service \
-    $PROJECT_NAME.socket \
-    $PROJECT_NAME.service
-systemctl status -l \
-    nginx.service \
-    $PROJECT_NAME.socket \
-    $PROJECT_NAME.service
+systemctl enable nginx.service
+systemctl enable $PROJECT_NAME.socket
+systemctl enable $PROJECT_NAME.service
 
-#Done
-echo "done! navigate to http://$SITE_DOMAIN/ to make sure it worked."
-echo "If systemd wasnt the init provider before, you'll definitely need to reboot first."
+
+#Finished
+echo "Done! After rebooting, navigate to http://$SITE_DOMAIN/."
+echo "Or, check status by running:"
+echo "systemctl status -l \\"
+echo "    nginx.service \\"
+echo "    $PROJECT_NAME.socket \\"
+echo "    $PROJECT_NAME.service"
 
