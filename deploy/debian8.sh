@@ -21,6 +21,7 @@
 #   - Change this to ip:port when serving nginx and gunicorn on seperate servers.
 #   - Also set the --forwarded-allow-ips flag for gunicorn.
 # - Everything in "Generate local settings" and up is intended to be customized for production.
+# - In all likelyhood, a reboot will be required for the site to work.
 
 
 #Check for root
@@ -172,8 +173,7 @@ Description=$PROJECT_NAME socket
 
 [Socket]
 ListenStream=/run/$PROJECT_NAME/socket
-ListenStream=0.0.0.0:9000
-ListenStream=[::]:8000
+#ListenStream=0.0.0.0:8000
 
 [Install]
 WantedBy=sockets.target
@@ -196,7 +196,7 @@ upstream $(echo $PROJECT_NAME)_app_server {
     # fail_timeout=0 means we always retry an upstream even if it failed
     # to return a good HTTP response
     server unix:/run/$PROJECT_NAME/socket fail_timeout=0;
-    # server 0.0.0.0:9000 fail_timeout=0;
+    # server 0.0.0.0:8000 fail_timeout=0;
 }
 
 # server {
