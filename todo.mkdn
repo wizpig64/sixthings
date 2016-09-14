@@ -7,4 +7,3 @@ To Do
 - REST Framework
 - Channels
 - History page with statistics maybe
-- Host this project for anyone to use

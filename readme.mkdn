@@ -14,3 +14,6 @@ Six Things
 ==========
 
 This project was created so I could explore using Django 1.10, Django Channels, Django REST framework, Jinja2 templates, and to build a tool that might help me with my productivity.
+
+You can create an account and use Six Things at [sixthings.agrimgt.com](http://sixthings.agrimgt.com/). Let me know if you find the tool or this project useful.
+
