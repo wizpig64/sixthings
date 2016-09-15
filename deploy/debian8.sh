@@ -31,9 +31,11 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 
-#Variables
+# VARIABLES
+#===========
+
 SITE_NAME="Six Things"
-SITE_DOMAIN=sixthings.example.com
+SITE_DOMAIN=sixthings.agrimgt.com
 SUPERUSER_USERNAME=admin
 SUPERUSER_PASSWORD=change_my_password
 SUPERUSER_EMAIL=admin@$SITE_DOMAIN
@@ -48,7 +50,9 @@ PROJECT_USER=www-data
 GIT_REPO=https://github.com/wizpig64/sixthings.git
 
 
-#Install system requirements
+# INSTALL SYSTEM REQUIREMENTS
+#=============================
+
 #optionally, dist-upgrade and install some suggested packages if you'd like.
 apt-get update
 #apt-get dist-upgrade -y
@@ -65,11 +69,13 @@ apt-get install -y \
     # htop \
 
 
+# INSTALL PROJECT
+#=================
+
 #Download project
 mkdir -p $PROJECT_DIR
 cd $PROJECT_DIR
 git clone $GIT_REPO .
-
 
 #Generate local settings
 cat <<EOF > project/settings_local.py
@@ -98,39 +104,33 @@ ALLOWED_HOSTS=$ALLOWED_HOSTS
 # SERVER_EMAIL = EMAIL_HOST_USER
 EOF
 
-
 #Assign ownership of project to PROJECT_USER
-chown -R www-data:www-data .
-
-
-#Do the following as the PROJECT_USER (a bit messy i know)
-sudo -u $PROJECT_USER bash <<ENDUSER
-
+chown -R $PROJECT_USER:$PROJECT_USER .
 
 #Initialize project
-cd $PROJECT_DIR
-virtualenv .
-source bin/activate
-pip install -r requirements.txt
+sudo -u $PROJECT_USER virtualenv .
 
+#Install python plugins (pip updated so pip-sync works)
+sudo -u $PROJECT_USER bin/pip install --upgrade pip
+sudo -u $PROJECT_USER bin/pip install -r requirements.txt
 
-#Set up media and static directories
-mkdir -p serve/media serve/static
-python manage.py collectstatic -cl --noinput
-
+#Set up static files
+sudo -u $PROJECT_USER bin/python manage.py collectstatic -cl --noinput
 
 #Set up database
-python manage.py migrate --noinput
-python manage.py shell <<EOF
+sudo -u $PROJECT_USER bin/python manage.py migrate --noinput
 
 #Update default site
+sudo -u $PROJECT_USER bin/python manage.py shell <<EOF
 from django.contrib.sites.models import Site
 Site.objects.update(
    name='$SITE_NAME',
    domain='$SITE_DOMAIN',
 )
+EOF
 
 #Create superuser
+sudo -u $PROJECT_USER bin/python manage.py shell <<EOF
 from django.contrib.auth import get_user_model
 get_user_model().objects.create_superuser(
     username='$SUPERUSER_USERNAME',
@@ -140,11 +140,10 @@ get_user_model().objects.create_superuser(
 EOF
 
 
-#Go back to root user
-ENDUSER
+# SYSTEMD SCRIPTS
+#=================
 
-
-#Set up service and socket with systemd.
+#Service
 cat <<EOF > /etc/systemd/system/$PROJECT_NAME.service
 [Unit]
 Description=$PROJECT_NAME daemon
@@ -153,8 +152,8 @@ After=network.target
 
 [Service]
 PIDFile=/run/$PROJECT_NAME/pid
-User=www-data
-Group=www-data
+User=$PROJECT_USER
+Group=$PROJECT_USER
 WorkingDirectory=$PROJECT_DIR
 ExecStart=$PROJECT_DIR/bin/gunicorn \\
   --pid /run/$PROJECT_NAME/pid \\
@@ -167,6 +166,7 @@ ExecStop=/bin/kill -s TERM \$MAINPID
 WantedBy=multi-user.target
 EOF
 
+#Socket
 cat <<EOF > /etc/systemd/system/$PROJECT_NAME.socket
 [Unit]
 Description=$PROJECT_NAME socket
@@ -179,10 +179,18 @@ ListenStream=/run/$PROJECT_NAME/socket
 WantedBy=sockets.target
 EOF
 
+#Temp files
 cat <<EOF > /usr/lib/tmpfiles.d/$PROJECT_NAME.conf
-d /run/$PROJECT_NAME 0755 www-data www-data -
+d /run/$PROJECT_NAME 0755 $PROJECT_USER $PROJECT_USER -
 EOF
 
+#Enable everything
+systemctl enable $PROJECT_NAME.socket
+systemctl enable $PROJECT_NAME.service
+
+
+# NGINX SERVER
+#==============
 
 #Set up nginx, adding on to default config.
 cat <<EOF > /etc/nginx/sites-available/$PROJECT_NAME
@@ -192,7 +200,7 @@ cat <<EOF > /etc/nginx/sites-available/$PROJECT_NAME
 # - Provide SSL key and certificate files
 # - Enable SECURE_PROXY_SSL_HEADER in project/settings_local.py
 
-upstream $(echo $PROJECT_NAME)_app_server {
+upstream ${PROJECT_NAME}_app_server {
     # fail_timeout=0 means we always retry an upstream even if it failed
     # to return a good HTTP response
     server unix:/run/$PROJECT_NAME/socket fail_timeout=0;
@@ -231,7 +239,7 @@ server {
         proxy_set_header    X-Forwarded-Proto \$scheme;
         proxy_set_header    X-Real-IP \$remote_addr;
         proxy_redirect      off;
-        proxy_pass          http://$(echo $PROJECT_NAME)_app_server;
+        proxy_pass          http://${PROJECT_NAME}_app_server;
     }
 
     error_page 500 502 503 504 /500.html;
@@ -242,18 +250,59 @@ server {
 EOF
 ln -s /etc/nginx/sites-available/$PROJECT_NAME /etc/nginx/sites-enabled/$PROJECT_NAME
 
-
-#Enable everything
+#Enable nginx
 systemctl enable nginx.service
-systemctl enable $PROJECT_NAME.socket
-systemctl enable $PROJECT_NAME.service
 
+
+# FINAL STEPS
+#=============
+
+#Create update script
+cat <<EOF > $PROJECT_DIR/bin/update
+#!/bin/bash
+
+#TODO: idea, have systemd run this??
+#What this script does:
+# - Pull $PROJECT_NAME project changes via git.
+#   - Any existing changes are stashed.
+#   - Any existing commits that are lost can be found with git reflog.
+# - Run some management commands.
+# - Restart gunicorn.
+
+#Check for root
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root" 1>&2
+    exit 1
+fi
+
+PROJECT_DIR=$PROJECT_DIR
+PROJECT_NAME=$PROJECT_NAME
+PROJECT_USER=$PROJECT_USER
+
+cd \$PROJECT_DIR
+
+#Git
+sudo -u \$PROJECT_USER git fetch
+sudo -u \$PROJECT_USER git stash
+sudo -u \$PROJECT_USER git reset --hard origin
+# sudo -u \$PROJECT_USER git submodule update --init --recursive
+
+#Management
+sudo -u \$PROJECT_USER bin/pip-sync
+sudo -u \$PROJECT_USER bin/python manage.py migrate --noinput
+sudo -u \$PROJECT_USER bin/python manage.py collectstatic -cl --noinput
+
+#Gunicorn
+systemctl stop \$PROJECT_NAME.service
+systemctl start \$PROJECT_NAME.service
+systemctl status -l \$PROJECT_NAME.service
+EOF
+chmod +x $PROJECT_DIR/update
 
 #Finished
-echo "Done! After rebooting, navigate to http://$SITE_DOMAIN/."
-echo "Or, check status by running:"
+echo "Done! After rebooting, navigate to http://$SITE_DOMAIN/. Or, check status by running:"
 echo "systemctl status -l \\"
 echo "    nginx.service \\"
 echo "    $PROJECT_NAME.socket \\"
 echo "    $PROJECT_NAME.service"
-
+echo "The project can be updated by running $PROJECT_DIR/bin/update as root."

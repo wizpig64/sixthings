@@ -1,3 +1,4 @@
+#python
 *.pyc
 bin/
 include/
@@ -5,6 +6,8 @@ lib/
 local/
 pip-selfcheck.json
 
+#project
 project/settings_local.py
 db.sqlite3
-serve/ #media and static roots stored here
+#media and static roots stored here:
+serve/
