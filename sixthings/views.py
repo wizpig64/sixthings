@@ -23,6 +23,10 @@ class ThingListView(generic.ListView):
             'name':   'yesterday',
             'date':   yesterday,
             'things': queryset.filter(date=yesterday),
+        } if not queryset.filter(date__lt=yesterday, done=False).count() else {
+            'name':   'overdue since',
+            'date':   queryset.filter(date__lt=yesterday, done=False).first().date,
+            'things': queryset.filter(date__lte=yesterday, done=False),
         }, {
             'name':   'today',
             'date':   today,
